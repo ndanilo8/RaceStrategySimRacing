@@ -2,7 +2,7 @@
 # Contact: ndanilo8@hotmail.com
 # Description: This is the database handler for the Race Strategy creation. It's written with Python and relies on the SQLite3 DB
 
-# Based of the google sheets stint calculator https://docs.google.com/spreadsheets/d/1xvdXoQC3cvjysds_nth3MmrK9AnR3qjD-pyy-22ukHE/edit?usp=sharing
+
 
 
 import sqlite3
@@ -135,92 +135,47 @@ def show_all():
     # Close our connection
     conn.close()
 
-# Add a new record to the pitTimelost table
-def add_one_pitTimelost_record(refuel_speed_in_seconds, fuel_per_hour, time_lost_total_fuel,time_tyres,tread_per_hour, time_lost_total_tyre, time_coeff):
+# Add Many Records To the raceInfo Table
+def add_many_raceInfo_records(List):
     # Connect to database
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
-    c.execute("INSERT INTO pitTimeLost VALUES (?,?,?,?,?,?,?)",
-              (refuel_speed_in_seconds, fuel_per_hour, time_lost_total_fuel,time_tyres,tread_per_hour, time_lost_total_tyre, time_coeff))
+    c.executemany("INSERT INTO raceInfo VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (List))
     # Commit our command
     conn.commit()
     # Close our connection
     conn.close()
 
-# Add a Record to the drivers Table
-def add_one_driver_record(first_name, last_name, email):
+# Add Many Records To the carData Table
+def add_many_pitTimeLost_records(List):
     # Connect to database
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
-    c.execute("INSERT INTO drivers VALUES (?,?,?)",
-              (first_name, last_name, email))
+    c.executemany("INSERT INTO pitTimeLost VALUES (?,?,?,?,?,?,?)", (List))
     # Commit our command
     conn.commit()
     # Close our connection
     conn.close()
 
-
-# Add a Record to carData Table
-def add_one_carData_record(car_class, car_name, fuel_tank_size, pit_stop_time_in_seconds):
+def add_many_drivers_records(List):
     # Connect to database
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
-    c.execute("INSERT INTO carData VALUES (?,?,?,?)",
-              (car_class, car_name, fuel_tank_size, pit_stop_time_in_seconds))
+    c.executemany("INSERT INTO drivers VALUES (?,?,?)", (List))
     # Commit our command
     conn.commit()
     # Close our connection
     conn.close()
 
-def add_one_raceInfo_record(track_name, race_length, race_date, driver_briefing_time,qualifying_time,warmup_time,race_time,maximum_cut_tracks,raceView,weather_forecast,incident_report_form,driver_change_form):
+def add_many_stintInfo_records(List):
     # Connect to database
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
-    c.execute("INSERT INTO raceInfo VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-              (track_name, race_length, race_date, driver_briefing_time,qualifying_time,warmup_time,race_time,maximum_cut_tracks,raceView,weather_forecast,incident_report_form,driver_change_form))
+    c.executemany("INSERT INTO stintInfo VALUES (?,?,?)", (List))
     # Commit our command
     conn.commit()
     # Close our connection
     conn.close()
-
-
-# Add a Record to carData Table
-def add_one_carData_record(car_class, car_name, fuel_tank_size, pit_stop_time_in_seconds):
-    # Connect to database
-    conn = sqlite3.connect('data.db')
-    c = conn.cursor()
-    c.execute("INSERT INTO carData VALUES (?,?,?,?)",
-              (car_class, car_name, fuel_tank_size, pit_stop_time_in_seconds))
-    # Commit our command
-    conn.commit()
-    # Close our connection
-    conn.close()
-
-# Add a Record to carData Table
-def add_one_stintInfo_record(laptime, fuel_per_lap, tire_wear_per_lap, fuel_range_in_laps,no_of_refuels,tyre_range,no_of_tyre_changes,swap_at_percentage,tyres_every,tyres_constant,fuel_per_race_in_liters,avg_refuel_in_liters,avg_stint_laps,last_pit_lap,fuel_splash_in_liters):
-    # Connect to database
-    conn = sqlite3.connect('data.db')
-    c = conn.cursor()
-    c.execute("INSERT INTO stintInfo VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-              (laptime, fuel_per_lap, tire_wear_per_lap, fuel_range_in_laps,no_of_refuels,tyre_range,no_of_tyre_changes,swap_at_percentage,tyres_every,tyres_constant,fuel_per_race_in_liters,avg_refuel_in_liters,avg_stint_laps,last_pit_lap,fuel_splash_in_liters))
-    # Commit our command
-    conn.commit()
-    # Close our connection
-    conn.close()
-
-
-# TODO
-# Add Many Records To a Table
-def add_many_records(List):
-    # Connect to database
-    conn = sqlite3.connect('data.db')
-    c = conn.cursor()
-    c.executemany("INSERT INTO raceInfo VALUES (?,?,?)", (List))
-    # Commit our command
-    conn.commit()
-    # Close our connection
-    conn.close()
-
 
 # Delete one record from a table
 def delete_one_record(id, table_name):
@@ -234,7 +189,6 @@ def delete_one_record(id, table_name):
     conn.commit()
     # Close our connection
     conn.close()
-
 
 # delete all tables   
 def delete_all_tables():
@@ -267,14 +221,23 @@ def delete_all_tables():
 
 # Delete only one table   
 def delete_one_table(table_name):
-    command = "DROP TABLE " + table_name
     # Connect to database
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
 
+    command = "DROP TABLE " + table_name
     c.execute(command)
     # commit out command
     conn.commit()   
 
     # close our connection
     conn.close()
+
+def query_fetch():
+    # Connect to database
+    conn = sqlite3.connect('data.db')
+    # Create a cursor = c
+    c = conn.cursor()
+
+    #create the query
+    c.execute("SELECT * FROM stintInfo")
